@@ -7,6 +7,7 @@ import networkx as nx
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from jarvis.core.specie import chem_data, get_node_attributes
+from rdkit.Chem import rdchem
 
 
 
@@ -184,8 +185,18 @@ def encode_bond_14(bond):
     bond_dir = [0] * 7
     bond_dir[bond.GetBondDir()] = 1
     
-    bond_type = [0] * 4
-    bond_type[int(bond.GetBondTypeAsDouble()) - 1] = 1
+    #bond_type = [0] * 4
+    #bond_type[int(bond.GetBondTypeAsDouble()) - 1] = 1
+    bond_type = [0, 0, 0, 0]
+    bt = bond.GetBondType()
+    if bt == rdchem.BondType.SINGLE:
+        bond_type[0] = 1
+    elif bt == rdchem.BondType.DOUBLE:
+        bond_type[1] = 1
+    elif bt == rdchem.BondType.TRIPLE:
+        bond_type[2] = 1
+    elif bt == rdchem.BondType.AROMATIC:
+        bond_type[3] = 1
     
     bond_length = bond_length_approximation(bond.GetBondType())
     
@@ -340,7 +351,9 @@ def atom_to_graph(smiles,encoder_atom,encoder_bond):
                         s_d_dis = calculate_dis(coor_i,coor_j)
 
                         if s_d_dis <= 5:
-                            if check_common_elements(src_list,dst_list,i,j):
+                            #if check_common_elements(src_list,dst_list,i,j):
+                            if (not check_common_elements(src_list, dst_list, i, j) and not check_common_elements(src_list, dst_list, j, i)):
+                            
                                 src_list.append(i)
                                 src_list.append(j)
                                 dst_list.append(j)
