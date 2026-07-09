@@ -218,8 +218,8 @@ def atom_to_graph(smiles,encoder_atom,encoder_bond):
                         s_d_dis = calculate_dis(coor_i,coor_j)
 
                         if 0< s_d_dis <= 5:
-                            #if check_common_elements(src_list,dst_list,i,j):
-                            if (not check_common_elements(src_list, dst_list, i, j) and not check_common_elements(src_list, dst_list, j, i)):
+                            if check_common_elements(src_list,dst_list,i,j):
+                            #if (not check_common_elements(src_list, dst_list, i, j) and not check_common_elements(src_list, dst_list, j, i)):
                             
                                 src_list.extend([i,j])
                     
